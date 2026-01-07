@@ -1,0 +1,123 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: List project files
+      run: |
+        echo "Project structure:"
+        dir /s
+      shell: cmd
+    
+    - name: Create icon (optional)
+      run: |
+        python create_icon.py
+      continue-on-error: true
+    
+    - name: Build Windows executable
+      run: |
+        python build_exe_windows.py
+    
+    - name: Test executable
+      run: |
+        if (Test-Path "dist\ExcelDataProcessor.exe") {
+          Write-Host "✅ Executable created successfully"
+          $size = (Get-Item "dist\ExcelDataProcessor.exe").Length / 1MB
+          Write-Host "📊 File size: $([math]::Round($size, 1)) MB"
+        } else {
+          Write-Host "❌ Executable not found"
+          Write-Host "Contents of dist directory:"
+          if (Test-Path "dist") {
+            Get-ChildItem "dist" -Recurse
+          } else {
+            Write-Host "dist directory does not exist"
+          }
+          exit 1
+        }
+      shell: powershell
+    
+    - name: Create release package
+      run: |
+        # Create distribution directory
+        New-Item -ItemType Directory -Force -Path "release"
+        
+        # Copy executable
+        Copy-Item "dist\ExcelDataProcessor.exe" "release\"
+        
+        # Create README for release
+        @"
+# Excel Data Processor - Windows版本
+
+## 🚀 快速开始
+双击 ExcelDataProcessor.exe 即可启动应用程序。
+
+## 📋 功能特性
+- ✅ 支持Excel (.xlsx, .xls) 和CSV文件导入
+- ✅ 字段选择和管理
+- ✅ 自定义字段添加
+- ✅ 实时数据预览
+- ✅ Excel文件输出
+- ✅ 现代化GUI界面
+
+## 🖥️ 系统要求
+- Windows 7/8/10/11
+- 2GB 内存（推荐4GB）
+- 200MB 磁盘空间
+
+## 🔧 故障排除
+如果遇到安全警告，请点击"更多信息" → "仍要运行"
+
+---
+构建日期: $(Get-Date -Format 'yyyy年MM月dd日')
+版本: 1.0.0
+"@ | Out-File -FilePath "release\README.txt" -Encoding UTF8
+        
+        # Create version info
+        @"
+Build Information:
+- Build Date: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+- Python Version: $($PSVersionTable.PSVersion)
+- Platform: Windows
+- Architecture: x64
+- Commit: $env:GITHUB_SHA
+"@ | Out-File -FilePath "release\BUILD_INFO.txt" -Encoding UTF8
+      shell: powershell
+    
+    - name: Upload executable artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ExcelDataProcessor-Windows-${{ github.sha }}
+        path: release/
+        retention-days: 30
+    
+    - name: Upload build logs
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: build-logs-${{ github.sha }}
+        path: |
+          build/
+          *.log
+        retention-days: 7

@@ -1,0 +1,57 @@
+# Windows 构建包使用说明
+
+## 📦 构建包内容
+
+这个构建包包含了在Windows系统上构建exe文件所需的所有文件：
+
+1. **源代码**: 完整的Python项目源码
+2. **构建脚本**: Windows专用的构建脚本
+3. **配置文件**: PyInstaller配置文件
+4. **依赖文件**: requirements.txt
+5. **说明文档**: 详细的构建和使用说明
+
+## 🖥️ Windows系统要求
+
+- Windows 7/8/10/11 (64位推荐)
+- Python 3.8 或更高版本
+- 至少 2GB 可用内存
+- 至少 1GB 可用磁盘空间
+
+## 🚀 快速开始
+
+### 步骤1: 准备环境
+1. 在Windows系统上安装Python 3.8+
+2. 解压构建包到任意目录
+3. 打开命令提示符(cmd)或PowerShell
+
+### 步骤2: 构建exe文件
+```cmd
+# 进入项目目录
+cd path\to\extracted\folder
+
+# 运行Windows构建脚本
+python build_exe_windows.py
+
+# 或使用批处理文件
+build_windows.bat
+```
+
+### 步骤3: 获取exe文件
+构建完成后，exe文件位于：
+```
+dist\ExcelDataProcessor.exe
+```
+
+## 📋 详细说明
+
+请参考包内的以下文件：
+- `WINDOWS_BUILD_GUIDE.md` - 详细构建指南
+- `TROUBLESHOOTING.md` - 故障排除指南
+- `README_WINDOWS.md` - Windows版本说明
+
+## 🎯 预期结果
+
+- 文件名: ExcelDataProcessor.exe
+- 大小: 约100-150MB
+- 功能: 完整的Excel数据处理功能
+- 兼容性: Windows 7及以上版本
