@@ -34,7 +34,7 @@
     - **Validates: Requirements 1.3, 1.5, 4.5, 5.5, 8.1, 8.2**
 
 - [ ] 3. 数据模型和控制器实现
-  - [x] 3.1 实现 DataModel 和 DataController
+  - [ ] 3.1 实现 DataModel 和 DataController
     - 创建 DataModel 数据类
     - 实现 DataController 的字段选择逻辑
     - 实现预览数据生成功能
