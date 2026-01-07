@@ -172,6 +172,16 @@ a = Analysis(
         'openpyxl',
         'numpy',
         'xlsxwriter',
+        'src',
+        'src.main',
+        'src.views',
+        'src.views.main_window',
+        'src.controllers',
+        'src.controllers.main_controller',
+        'src.models',
+        'src.models.data_model',
+        'src.services',
+        'src.services.data_service',
     ],
     hookspath=[],
     hooksconfig={},
@@ -214,7 +224,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='icon.ico' if Path('icon.ico').exists() else None,
 )'''
     
     with open('excel_processor_windows.spec', 'w', encoding='utf-8') as f:
